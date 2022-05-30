@@ -22,3 +22,13 @@ var beatles=[{
   profilePic:"http://cp91279.biography.com/BIO_Bio-Shorts_0_Ringo-Starr_SF_HD_768x432-16x9.jpg"
 }
 ]
+
+http.createServer( function(req, res) {
+  if(req.url === '/api' || req.url === '/api/'){
+    res.writeHead(200, {'Content-type':'aplication/json'})
+    res.end(JSON.stringify(beatles))
+  }
+
+  //if(req.url.)
+} ).listen(3000,'127.0.0.1')
+

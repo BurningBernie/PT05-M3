@@ -32,8 +32,9 @@ $Promise.prototype._internalReject = function (reason) {
 }
 
 $Promise.prototype._callHandlers = function () {
-    while (this._handlerGroups.length) {
+    while (this._handlerGroups[0]) { //this._handlerGroups.length
         const hd = this._handlerGroups.shift()
+        //-------------camino del éxito-------------------------------------------------
         if (this._state === 'fulfilled') {
             if (hd.successCb) {
                 try {
@@ -53,9 +54,10 @@ $Promise.prototype._callHandlers = function () {
                     //Handler arrojó un error o excepción
                     hd.downstreamPromise._internalReject(error)
                 }
-            } else{
+            } else {
                 hd.downstreamPromise._internalResolve(this._value)
             }
+            //-------------camino del error-----------------------------------------------------
         } else if (this._state === 'rejected') {
             if (hd.errorCb) {
                 try {
@@ -72,10 +74,10 @@ $Promise.prototype._callHandlers = function () {
                     }
                 }
                 catch (error) {
-                     //Handler arrojó un error o excepción
-                     hd.downstreamPromise._internalReject(error)
+                    //Handler arrojó un error o excepción
+                    hd.downstreamPromise._internalReject(error)
                 }
-            }else {
+            } else {
                 hd.downstreamPromise._internalReject(this._value)
             }
         }
@@ -87,6 +89,7 @@ $Promise.prototype.then = function (goodResult, badResult) {
     if (typeof goodResult !== 'function') goodResult = false
 
     const downstreamPromise = new $Promise(() => { })
+
     this._handlerGroups.push({
         successCb: goodResult,
         errorCb: badResult,
